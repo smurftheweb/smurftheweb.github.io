@@ -66,6 +66,15 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="index.html" />
+    <Content Include="libs\phaser-isometric\phaser-plugin-isometric.js" />
+    <Content Include="libs\phaser-isometric\phaser-plugin-isometric.min.js" />
+    <Content Include="libs\phaser-isometric\phaser.plugin.isometric.d.ts" />
+    <Content Include="libs\phaser\p2.d.ts" />
+    <Content Include="libs\phaser\phaser.d.ts" />
+    <Content Include="libs\phaser\phaser.js" />
+    <Content Include="libs\phaser\phaser.min.js" />
+    <Content Include="libs\phaser\pixi.d.ts" />
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -75,10 +84,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="src\game.ts" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="assets\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
