@@ -1,3 +1,5 @@
+/// <reference path="../phaser/phaser.d.ts" />
+
 //debug octreee is missing - Octree 
 //debug isoSprite is missing - IsoSprite
 //gameobjectcreator isoSprite missing - IsoSprite

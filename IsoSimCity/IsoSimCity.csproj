@@ -88,14 +88,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="src\Chunk.js" />
     <Content Include="src\game.js" />
+    <Content Include="src\WorldManager.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="src\Chunk.ts" />
     <TypeScriptCompile Include="src\game.ts" />
+    <TypeScriptCompile Include="src\WorldManager.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
