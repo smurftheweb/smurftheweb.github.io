@@ -23,8 +23,8 @@ class IsoGame {
         // setup plugins
         this.iso = this.game.plugins.add(Phaser.Plugin.Isometric);
         this.game.physics.startSystem(Phaser.Plugin.Isometric.ISOARCADE);
-        this.iso.anchor.setTo(0.5, 0.1);
-        this.game.iso.anchor.setTo(0.5, 0.1);
+        this.iso.projector.anchor.setTo(0.5, 0.1);
+        //this.game.iso.anchor.setTo(0.5, 0.1);
         this.game.renderer.renderSession.roundPixels = true;
 
         this.game.load.image('logo', 'assets/phaser2.png');

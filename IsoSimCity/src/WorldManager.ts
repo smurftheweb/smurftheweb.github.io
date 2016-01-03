@@ -6,6 +6,7 @@
 class WorldManager {
 
     game: Phaser.Game;
+    iso: Phaser.Plugin.Isometric;
     world = {
         layers: 10,
         units: 20,
@@ -16,8 +17,9 @@ class WorldManager {
     layers = [];
     chunks = [];
 
-    constructor(game: Phaser.Game) {
+    constructor(game: Phaser.Game, iso: Phaser.Plugin.Isometric) {
         this.game = game;
+        this.iso = iso;
     }
 
     buildLayers(layers: number) {
@@ -143,7 +145,8 @@ class WorldManager {
                 var z = this.layers[l].z;
                 // add the tile
                 if (this.chunks[c].tiles[l][i] != 0) {
-                    tile = this.game.add.isoSprite(x, y, z, this.layers[l].tileset, this.chunks[c].tiles[l][i], this.chunks[c].group);
+                    tile = this.iso.addIsoSprite(x, y, z, this.layers[l].tileset, this.chunks[c].tiles[l][i], this.chunks[c].group);
+                    //tile = this.game.add.isoSprite(x, y, z, this.layers[l].tileset, this.chunks[c].tiles[l][i], this.chunks[c].group);
                     tile.anchor.setTo(0.5, 1);
                     tile.smoothed = false;
                     tile.scale.x = 1;
@@ -170,7 +173,8 @@ class WorldManager {
                 i++;
             }
             l++;
-            this.game.iso.simpleSort(this.chunks[c].group);
+            this.iso.projector.simpleSort(this.chunks[c].group);
+            //this.game.iso.simpleSort(this.chunks[c].group);
         }
 
         return totalSprites;

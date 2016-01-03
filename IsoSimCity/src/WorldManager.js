@@ -3,7 +3,7 @@
 /// <reference path="../libs/phaser/pixi.d.ts" />
 /// <reference path="../libs/phaser-isometric/phaser-plugin-isometric.d.ts" />
 var WorldManager = (function () {
-    function WorldManager(game) {
+    function WorldManager(game, iso) {
         this.world = {
             layers: 10,
             units: 20,
@@ -14,6 +14,7 @@ var WorldManager = (function () {
         this.layers = [];
         this.chunks = [];
         this.game = game;
+        this.iso = iso;
     }
     WorldManager.prototype.buildLayers = function (layers) {
         var l = 0;
@@ -122,7 +123,8 @@ var WorldManager = (function () {
                 var z = this.layers[l].z;
                 // add the tile
                 if (this.chunks[c].tiles[l][i] != 0) {
-                    tile = this.game.add.isoSprite(x, y, z, this.layers[l].tileset, this.chunks[c].tiles[l][i], this.chunks[c].group);
+                    tile = this.iso.addIsoSprite(x, y, z, this.layers[l].tileset, this.chunks[c].tiles[l][i], this.chunks[c].group);
+                    //tile = this.game.add.isoSprite(x, y, z, this.layers[l].tileset, this.chunks[c].tiles[l][i], this.chunks[c].group);
                     tile.anchor.setTo(0.5, 1);
                     tile.smoothed = false;
                     tile.scale.x = 1;
@@ -151,9 +153,10 @@ var WorldManager = (function () {
                 i++;
             }
             l++;
-            this.game.iso.simpleSort(this.chunks[c].group);
+            this.iso.projector.simpleSort(this.chunks[c].group);
         }
         return totalSprites;
     };
     return WorldManager;
 })();
+//# sourceMappingURL=WorldManager.js.map
