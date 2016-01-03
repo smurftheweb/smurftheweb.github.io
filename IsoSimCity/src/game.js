@@ -29,4 +29,3 @@ var IsoGame = (function () {
 window.onload = function () {
     var game = new IsoGame();
 };
-//# sourceMappingURL=game.js.map

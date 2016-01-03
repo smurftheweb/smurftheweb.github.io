@@ -99,6 +99,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="src\Chunk.ts" />
     <TypeScriptCompile Include="src\game.ts" />
+    <TypeScriptCompile Include="src\Generate.ts" />
     <TypeScriptCompile Include="src\WorldManager.ts" />
   </ItemGroup>
   <ItemGroup>
