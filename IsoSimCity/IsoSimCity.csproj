@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\phaser2.png" />
+    <Content Include="assets\tile.png" />
     <Content Include="index.html" />
     <Content Include="libs\phaser-isometric\phaser-plugin-isometric.js" />
     <Content Include="libs\phaser-isometric\phaser-plugin-isometric.min.js" />
@@ -100,6 +101,7 @@
     <TypeScriptCompile Include="src\Chunk.ts" />
     <TypeScriptCompile Include="src\game.ts" />
     <TypeScriptCompile Include="src\Generate.ts" />
+    <TypeScriptCompile Include="src\isoexample.ts" />
     <TypeScriptCompile Include="src\WorldManager.ts" />
   </ItemGroup>
   <ItemGroup>
