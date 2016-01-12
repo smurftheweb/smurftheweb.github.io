@@ -6,12 +6,27 @@
 class IsoGame {
 
     game: Phaser.Game;
+    iso: Phaser.Plugin.Isometric;
 
     constructor() {
         this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', { preload: this.preload, create: this.create });
     }
 
     preload() {
+
+        // setup advanced settings
+        this.game.time.advancedTiming = true;
+        this.game.debug.renderShadow = false;
+        this.game.stage.disableVisibilityChange = true;
+        this.game.stage.smoothed = false;
+
+        // setup plugins
+        this.iso = this.game.plugins.add(Phaser.Plugin.Isometric);
+        this.game.physics.startSystem(Phaser.Plugin.Isometric.ISOARCADE);
+        this.iso.projector.anchor.setTo(0.5, 0.1);
+        //this.game.iso.anchor.setTo(0.5, 0.1);
+        this.game.renderer.renderSession.roundPixels = true;
+
         this.game.load.image('logo', 'assets/phaser2.png');
     }
 
