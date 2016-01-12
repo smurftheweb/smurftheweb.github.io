@@ -26,7 +26,7 @@ class IsoExample {
 
         this.iso.projector.anchor.setTo(0.5, 0.2);
 
-        this.game.load.image('tile', '/assets/tile.png');
+        this.game.load.image('tile', '../../assets/tile.png');
     }
 
     create() {
