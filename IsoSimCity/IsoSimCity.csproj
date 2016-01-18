@@ -79,6 +79,7 @@
     <Content Include="assets\preloader.gif" />
     <Content Include="assets\tile.png" />
     <Content Include="index.html" />
+    <Content Include="isoexample2.html" />
     <Content Include="isoexample.html" />
     <Content Include="javascript_version\main.js" />
     <Content Include="javascript_version\plugins\generate.js" />
@@ -121,6 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\Chunk.ts" />
+    <TypeScriptCompile Include="src\example2\isoexample.ts" />
     <TypeScriptCompile Include="src\game.ts" />
     <TypeScriptCompile Include="src\Generate.ts" />
     <TypeScriptCompile Include="src\example\isoexample.ts" />
