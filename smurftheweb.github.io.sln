@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IsoSimCity", "IsoSimCity\Is
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5A0734E6-1119-41F8-992A-25A1F72AA055}"
 	ProjectSection(SolutionItems) = preProject
+		index.html = index.html
+		README.md = README.md
 		WebEssentials2015-Settings.json = WebEssentials2015-Settings.json
 	EndProjectSection
 EndProject

@@ -5,26 +5,100 @@
 
 class Generate {
 
+    isogame: IsoGame;
     game: Phaser.Game;
     iso: Phaser.Plugin.Isometric;
+    roads: any;
+    tiles: any;
 
     HIGHWAY_WIDTH: number;
     HIGHWAY_EASEMENT: number = 2;
 
 
-    constructor(game: Phaser.Game, iso: Phaser.Plugin.Isometric) {
-        this.game = game;
-        this.iso = iso;
+    constructor(isogame: IsoGame) {
+        this.isogame = isogame;
+        this.game = isogame.game;
+        this.iso = isogame.iso;
+        this.roads = isogame.roads;
+        this.tiles = isogame.tiles;
     }
 
     generateChunk(map, tiles) {
     }
 
     generateHighway(map, tiles, start, direction, half, length) {
+        //generates highways from lines (2d, pass in only one array)
+        //lines should be expressed: {start: 1, direction: s, length: 5}
+        var highway = this.tiles.highways.straight[direction];
+        var edge = this.tiles.highways.edges[direction]
+        var fullSlice = [edge[b], highway[0], highway[1], edge[b]];
+        var i = 0;
+        //for border toggle
+        var b = 0;
+        while (i < length) {
+            //flip flop b
+            //b = ((b == 0) ? 1 : 0);
+            fullSlice = [edge[b], highway[0], highway[1], edge[b]];
+            //the the direction matching logic stuff
+            if (direction == "e" || direction == "w") {
+                //everything is same except the offset
+                var index = ((direction == "e") ? (start + i) : (start - 1));
+                var c = 0;
+                if (half.indexOf("n") != -1) {
+                    tiles[index + (map.units * c++)] = fullSlice[0];
+                    tiles[index + (map.units * c++)] = fullSlice[1];
+                }
+                if (half.indexOf("s") != -1) {
+                    tiles[index + (map.units * c++)] = fullSlice[2];
+                    tiles[index + (map.units * c++)] = fullSlice[3];
+                }
+            } else if (direction == "n" || direction == "s") {
+                //everything is same except the offset
+                var index = ((direction == "s") ? (start + (map.units * i)) : (start - (map.units * i)));
+                var c = 0;
+                if (half.indexOf("w") != -1) {
+                    tiles[index + (c++)] = fullSlice[0];
+                    tiles[index + (c++)] = fullSlice[1];
+                }
+                if (half.indexOf("e") != -1) {
+                    tiles[index + (c++)] = fullSlice[2];
+                    tiles[index + (c++)] = fullSlice[3];
+                }
+            }
+            i++;
+        }
+        return tiles;
     }
 
     generateRoad(map, tiles, set, start, direction, length) {
+        //generates roads from lines (2d, pass in only one array)
+        //lines should be expressed: {start: 1, direction: s, length: 5}
+        if (direction == "n" || direction == "s") {
+            var road = this.roads.getIndex("ns".split(""), "city_plain");
+        } else {
+            var road = this.roads.getIndex("ew".split(""), "city_plain");
+        }
+        tiles[start] = road;
 
+        var i = 1;
+        while (i < length) {
+            switch (direction) {
+                case "n":
+                    tiles[start - (map.units * i)] = road;
+                    break;
+                case "e":
+                    tiles[start + i] = road;
+                    break;
+                case "w":
+                    tiles[start - i] = road;
+                    break;
+                case "s":
+                    tiles[start + (map.units * i)] = road;
+                    break;
+            }
+            i++;
+        }
+        return tiles;
     }
 
     generateBuilding(direction, coords, heart) {
