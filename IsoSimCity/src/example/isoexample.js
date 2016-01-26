@@ -58,3 +58,4 @@ var IsoExample = (function () {
 window.onload = function () {
     var game = new IsoExample();
 };
+//# sourceMappingURL=isoexample.js.map

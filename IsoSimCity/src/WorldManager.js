@@ -159,3 +159,4 @@ var WorldManager = (function () {
     };
     return WorldManager;
 })();
+//# sourceMappingURL=WorldManager.js.map

@@ -51,19 +51,14 @@ class IsoExample2 {
 
         // provide a 3d position for the cursor
         this.cursorPos = new Phaser.Plugin.Isometric.Point3();
+
+        // sprite changer
+        var keySpace = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        keySpace.onDown.add(this.changeTile, this);
     }
 
     update() {
-
-        // sprite changer
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
-            this.currentFrame++;
-            if (this.currentFrame > this.maxFrames) this.currentFrame = 0;
-            this.isoGroup.forEach(function (tile: Phaser.Sprite) {
-                tile.frame = this.currentFrame;
-            }, this);
-        }
-
+        
         // update cursor position
         // when converting to isometric, we need to specify z-pos manually, as
         // it cannot easily be gotten from 2d position
@@ -91,6 +86,15 @@ class IsoExample2 {
         this.game.debug.text("Move your mouse around!", 2, 36, "#ffffff");
         this.game.debug.text(String(this.game.time.fps) || '---', 2, 14, "#a7aebe");
         this.game.debug.text("Frame: " + String(this.currentFrame), 2, 50, '#a7aebe');
+    }
+
+    changeTile() {
+        this.currentFrame++;
+        if (this.currentFrame > this.maxFrames) this.currentFrame = 0;
+        this.isoGroup.forEach(function (tile: Phaser.Sprite) {
+            tile.frame = this.currentFrame;
+        }, this);
+     
     }
 }
 
