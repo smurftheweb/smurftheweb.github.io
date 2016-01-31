@@ -2,6 +2,7 @@
 /// <reference path="../libs/phaser/p2.d.ts" />
 /// <reference path="../libs/phaser/pixi.d.ts" />
 /// <reference path="../libs/phaser-isometric/phaser-plugin-isometric.d.ts" />
+/// <reference path="../src/states/Preload.ts" />
 var IsoGame = (function () {
     function IsoGame() {
         this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', { preload: this.preload, create: this.create });
@@ -18,11 +19,15 @@ var IsoGame = (function () {
         this.iso.projector.anchor.setTo(0.5, 0.1);
         //this.game.iso.anchor.setTo(0.5, 0.1);
         this.game.renderer.renderSession.roundPixels = true;
-        this.game.load.image('logo', 'assets/phaser2.png');
+        // Game States
+        this.game.state.add('boot', 'Boot');
+        this.game.state.add('gameover', 'GameOver');
+        this.game.state.add('menu', 'Menu');
+        this.game.state.add('play', 'Play');
+        this.game.state.add('preload', new Preload());
     };
     IsoGame.prototype.create = function () {
-        var logo = this.game.add.image(this.game.world.centerX, this.game.world.centerY, 'logo');
-        logo.anchor.setTo(0.5, 0.5);
+        this.game.state.start('preload');
     };
     return IsoGame;
 })();

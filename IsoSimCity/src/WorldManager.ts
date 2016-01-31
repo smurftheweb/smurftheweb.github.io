@@ -112,9 +112,27 @@ class WorldManager {
     }
 
     cleanWorld() {
+        var c = 0;
+        while (c < this.chunks.length) {
+            this.cleanChunk(c);
+            c++;
+        }
     }
 
-    clearChunk(e) {
+    cleanChunk(c) {
+        var i = 0;
+        var arrLen = this.chunks[c].tiles[0].length;
+        while (i < arrLen) {
+            if (this.chunks[c].tiles[2][i] != 0) {
+                // the top most layer has tiles, everything under it is dead
+                this.chunks[c].tiles[0][i] = 0;
+                this.chunks[c].tiles[1][i] = 0;
+            } else if (this.chunks[c].tiles[1][i] != 0) {
+                this.chunks[c].tiles[0][i] = 0;
+            }
+
+            i++;
+        }
     }
 
     drawWorld() {

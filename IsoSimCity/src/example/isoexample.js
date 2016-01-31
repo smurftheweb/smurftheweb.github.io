@@ -12,7 +12,7 @@ var IsoExample = (function () {
         // setup plugins
         this.iso = this.game.plugins.add(Phaser.Plugin.Isometric);
         this.iso.projector.anchor.setTo(0.5, 0.2);
-        this.game.load.image('tile', '/IsoSimCity/assets/tile.png');
+        this.game.load.image('tile', '../../assets/tile.png');
     };
     IsoExample.prototype.create = function () {
         this.isoGroup = this.game.add.group();

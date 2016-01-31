@@ -35,7 +35,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -78,6 +79,8 @@
     <Content Include="assets\phaser2.png" />
     <Content Include="assets\preloader.gif" />
     <Content Include="assets\tile.png" />
+    <Content Include="combined.js" />
+    <Content Include="favicon.ico" />
     <Content Include="index.html" />
     <Content Include="isoexample2.html" />
     <Content Include="isoexample.html" />
@@ -103,6 +106,8 @@
     <Content Include="packages.config" />
     <Content Include="src\example\isoexample.js.map" />
     <Content Include="javascript_version\tiles.json" />
+    <Content Include="src\states\Preload.js.map" />
+    <Content Include="combined.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -114,6 +119,7 @@
     <Content Include="src\Chunk.js" />
     <Content Include="src\example\isoexample.js" />
     <Content Include="src\game.js" />
+    <Content Include="src\states\Preload.js" />
     <Content Include="src\WorldManager.js" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -126,6 +132,7 @@
     <TypeScriptCompile Include="src\game.ts" />
     <TypeScriptCompile Include="src\Generate.ts" />
     <TypeScriptCompile Include="src\example\isoexample.ts" />
+    <TypeScriptCompile Include="src\Heart.ts" />
     <TypeScriptCompile Include="src\states\Play.ts" />
     <TypeScriptCompile Include="src\states\GameOver.ts" />
     <TypeScriptCompile Include="src\states\Menu.ts" />
@@ -142,6 +149,21 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptModuleKind>None</TypeScriptModuleKind>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile>combined.js</TypeScriptOutFile>
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
