@@ -10,7 +10,7 @@ gameover.js - done
 menu.js - done
 play.js - removing, as it seems to do nothing
 preload.js - done
-main.js = game.ts, incomplete
+main.js = game.ts, done (apart from tiles.json)
 tiles.json - ?
 generate.ts - done
 

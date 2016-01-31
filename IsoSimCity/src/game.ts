@@ -8,11 +8,20 @@ class IsoGame {
 
     game: Phaser.Game;
     iso: Phaser.Plugin.Isometric;
-    roads: any;
+
     tiles: any;
+    roads: Road;
+    generate: Generate;
+    worldManager: WorldManager;
+
 
     constructor() {
         this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', { preload: this.preload, create: this.create });
+        this.generate = new Generate(this);
+        this.worldManager = new WorldManager(this.game, this.iso);
+        this.roads = new Road(this.game);
+
+        this.tiles = require('./tiles.json');
     }
 
     preload() {
