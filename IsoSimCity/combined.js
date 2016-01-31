@@ -197,7 +197,7 @@ var IsoGame = (function () {
         this.game.state.add('boot', 'Boot');
         this.game.state.add('gameover', 'GameOver');
         this.game.state.add('menu', 'Menu');
-        this.game.state.add('play', 'Play');
+        //this.game.state.add('play', 'Play');
         this.game.state.add('preload', new Preload());
     };
     IsoGame.prototype.create = function () {
@@ -814,18 +814,6 @@ var Menu = (function (_super) {
         }
     };
     return Menu;
-})(Phaser.State);
-var Play = (function (_super) {
-    __extends(Play, _super);
-    function Play() {
-        _super.apply(this, arguments);
-    }
-    Play.prototype.preload = function () {
-    };
-    Play.prototype.create = function () { };
-    Play.prototype.update = function () { };
-    Play.prototype.render = function () { };
-    return Play;
 })(Phaser.State);
 /// <reference path="../libs/phaser/phaser.d.ts" />
 /// <reference path="../libs/phaser/p2.d.ts" />

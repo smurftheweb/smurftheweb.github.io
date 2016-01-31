@@ -133,7 +133,6 @@
     <TypeScriptCompile Include="src\Generate.ts" />
     <TypeScriptCompile Include="src\example\isoexample.ts" />
     <TypeScriptCompile Include="src\Heart.ts" />
-    <TypeScriptCompile Include="src\states\Play.ts" />
     <TypeScriptCompile Include="src\states\GameOver.ts" />
     <TypeScriptCompile Include="src\states\Menu.ts" />
     <TypeScriptCompile Include="src\states\Boot.ts" />

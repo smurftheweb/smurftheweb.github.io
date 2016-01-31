@@ -8,7 +8,7 @@ worldmanager.js - done
 boot.js - done
 gameover.js - done
 menu.js - done
-play.js - not done
+play.js - removing, as it seems to do nothing
 preload.js - done
 main.js = game.ts, incomplete
 tiles.json - ?

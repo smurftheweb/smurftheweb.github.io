@@ -34,7 +34,7 @@ class IsoGame {
         this.game.state.add('boot', 'Boot');
         this.game.state.add('gameover', 'GameOver');
         this.game.state.add('menu', 'Menu');
-        this.game.state.add('play', 'Play');
+        //this.game.state.add('play', 'Play');
         this.game.state.add('preload', new Preload());
     }
 
