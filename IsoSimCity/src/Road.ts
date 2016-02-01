@@ -171,7 +171,7 @@
         
             // we have our needle, now let's find it!
             var index = this.getIndexFromObj(needle);
-            if (index != false) {
+            if (index != -1) {
                 // we found a match
                 tiles[problems[i]] = index;
                 if (needle.n === true) { tiles[n] = this.getIndex("ns", "city_intersection"); }
@@ -232,16 +232,48 @@
         }
     }
 
+    //give it an array of directions and it will tell you which piece fits the bill
     getIndex(directions, set) {
-
+        var i = 0;
+        var needle = {
+            n: directions.indexOf("n") != -1 ? true : false,
+            e: directions.indexOf("e") != -1 ? true : false,
+            w: directions.indexOf("w") != -1 ? true : false,
+            s: directions.indexOf("s") != -1 ? true : false,
+            set: set
+        }
+        return this.getIndexFromObj(needle);
     }
 
-    getIndexFromObj(needle) {
-
+    getIndexFromObj(needle): number {
+        for (var key in this.tiles.roads) {
+            if (this.tiles.roads.hasOwnProperty(key)) {
+                if (this.compareJSON(this.tiles.roads[key], needle)) {
+                    return parseInt(key);
+                }
+            }
+        }
+        return -1;
     }
 
+    //give it an array of directions and it will tell you which pieces fits the bill (no set required)
     getIndices(directions) {
-
+        var needles = [];
+        var needle = {
+            n: directions.indexOf("n") != -1 ? true : false,
+            e: directions.indexOf("e") != -1 ? true : false,
+            w: directions.indexOf("w") != -1 ? true : false,
+            s: directions.indexOf("s") != -1 ? true : false
+        }
+        for (var key in this.tiles.roads) {
+            if (this.tiles.roads[key].n == needle.n && this.tiles.roads[key].s == needle.s) {
+                if (this.tiles.roads[key].e == needle.e && this.tiles.roads[key].w == needle.w) {
+                    //this piece is the piece we want
+                    needles.push(parseInt(key));
+                }
+            }
+        }
+        return needles;
     }
 
     // give it an index, and it will return a direction object back to you

@@ -7,66 +7,6 @@ var Chunk = (function () {
 /// <reference path="../../libs/phaser/p2.d.ts" />
 /// <reference path="../../libs/phaser/pixi.d.ts" />
 /// <reference path="../../libs/phaser-isometric/phaser-plugin-isometric.d.ts" />
-var IsoExample = (function () {
-    function IsoExample() {
-        this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', { preload: this.preload, create: this.create, update: this.update, render: this.render });
-    }
-    IsoExample.prototype.preload = function () {
-        // setup phaser
-        this.game.time.advancedTiming = true;
-        // setup plugins
-        this.iso = this.game.plugins.add(Phaser.Plugin.Isometric);
-        this.iso.projector.anchor.setTo(0.5, 0.2);
-        this.game.load.image('tile', '../../assets/tile.png');
-    };
-    IsoExample.prototype.create = function () {
-        this.isoGroup = this.game.add.group();
-        // spawn the tiles
-        var tile;
-        for (var xx = 0; xx < 256; xx += 38) {
-            for (var yy = 0; yy < 256; yy += 38) {
-                // create a tile using the new isoSprite factory method
-                tile = this.iso.addIsoSprite(xx, yy, 0, 'tile', 0, this.isoGroup);
-                tile.anchor.setTo(0.5, 0);
-            }
-        }
-        // provide a 3d position for the cursor
-        this.cursorPos = new Phaser.Plugin.Isometric.Point3();
-    };
-    IsoExample.prototype.update = function () {
-        // update cursor position
-        // when converting to isometric, we need to specify z-pos manually, as
-        // it cannot easily be gotten from 2d position
-        this.iso.projector.unproject(this.game.input.activePointer.position, this.cursorPos);
-        // loop over the group to find if the 3d position that intersects with any isoSprite bounds
-        this.isoGroup.forEach(function (tile) {
-            var inBounds = tile.isoBounds.containsXY(this.cursorPos.x, this.cursorPos.y);
-            // if yes, do a little animation and tint change
-            if (!tile.selected && inBounds) {
-                tile.selected = true;
-                tile.tint = 0x86bfda;
-                this.game.add.tween(tile).to({ isoZ: 4 }, 200, Phaser.Easing.Quadratic.InOut, true);
-            }
-            else if (tile.selected && !inBounds) {
-                tile.selected = false;
-                tile.tint = 0xffffff;
-                this.game.add.tween(tile).to({ isoZ: 0 }, 200, Phaser.Easing.Quadratic.InOut, true);
-            }
-        }, this);
-    };
-    IsoExample.prototype.render = function () {
-        this.game.debug.text("Move your mouse around!", 2, 36, "#ffffff");
-        this.game.debug.text(String(this.game.time.fps) || '---', 2, 14, "#a7aebe");
-    };
-    return IsoExample;
-})();
-window.onload = function () {
-    var game = new IsoExample();
-};
-/// <reference path="../../libs/phaser/phaser.d.ts" />
-/// <reference path="../../libs/phaser/p2.d.ts" />
-/// <reference path="../../libs/phaser/pixi.d.ts" />
-/// <reference path="../../libs/phaser-isometric/phaser-plugin-isometric.d.ts" />
 var IsoExample2 = (function () {
     function IsoExample2() {
         this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', { preload: this.preload, create: this.create, update: this.update, render: this.render });
@@ -180,6 +120,10 @@ var Preload = (function (_super) {
 var IsoGame = (function () {
     function IsoGame() {
         this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', { preload: this.preload, create: this.create });
+        this.generate = new Generate(this);
+        this.worldManager = new WorldManager(this.game, this.iso);
+        this.tiles = this.game.load.json('tiles', './tiles.json'); // this comes from node.js
+        this.roads = new Road(this.game, this.tiles, this.generate);
     }
     IsoGame.prototype.preload = function () {
         // setup advanced settings
@@ -685,6 +629,66 @@ var Generate = (function () {
     };
     return Generate;
 })();
+/// <reference path="../../libs/phaser/phaser.d.ts" />
+/// <reference path="../../libs/phaser/p2.d.ts" />
+/// <reference path="../../libs/phaser/pixi.d.ts" />
+/// <reference path="../../libs/phaser-isometric/phaser-plugin-isometric.d.ts" />
+var IsoExample = (function () {
+    function IsoExample() {
+        this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', { preload: this.preload, create: this.create, update: this.update, render: this.render });
+    }
+    IsoExample.prototype.preload = function () {
+        // setup phaser
+        this.game.time.advancedTiming = true;
+        // setup plugins
+        this.iso = this.game.plugins.add(Phaser.Plugin.Isometric);
+        this.iso.projector.anchor.setTo(0.5, 0.2);
+        this.game.load.image('tile', '../../assets/tile.png');
+    };
+    IsoExample.prototype.create = function () {
+        this.isoGroup = this.game.add.group();
+        // spawn the tiles
+        var tile;
+        for (var xx = 0; xx < 256; xx += 38) {
+            for (var yy = 0; yy < 256; yy += 38) {
+                // create a tile using the new isoSprite factory method
+                tile = this.iso.addIsoSprite(xx, yy, 0, 'tile', 0, this.isoGroup);
+                tile.anchor.setTo(0.5, 0);
+            }
+        }
+        // provide a 3d position for the cursor
+        this.cursorPos = new Phaser.Plugin.Isometric.Point3();
+    };
+    IsoExample.prototype.update = function () {
+        // update cursor position
+        // when converting to isometric, we need to specify z-pos manually, as
+        // it cannot easily be gotten from 2d position
+        this.iso.projector.unproject(this.game.input.activePointer.position, this.cursorPos);
+        // loop over the group to find if the 3d position that intersects with any isoSprite bounds
+        this.isoGroup.forEach(function (tile) {
+            var inBounds = tile.isoBounds.containsXY(this.cursorPos.x, this.cursorPos.y);
+            // if yes, do a little animation and tint change
+            if (!tile.selected && inBounds) {
+                tile.selected = true;
+                tile.tint = 0x86bfda;
+                this.game.add.tween(tile).to({ isoZ: 4 }, 200, Phaser.Easing.Quadratic.InOut, true);
+            }
+            else if (tile.selected && !inBounds) {
+                tile.selected = false;
+                tile.tint = 0xffffff;
+                this.game.add.tween(tile).to({ isoZ: 0 }, 200, Phaser.Easing.Quadratic.InOut, true);
+            }
+        }, this);
+    };
+    IsoExample.prototype.render = function () {
+        this.game.debug.text("Move your mouse around!", 2, 36, "#ffffff");
+        this.game.debug.text(String(this.game.time.fps) || '---', 2, 14, "#a7aebe");
+    };
+    return IsoExample;
+})();
+window.onload = function () {
+    var game = new IsoExample();
+};
 var Heart = (function () {
     function Heart(z_min, z_max, radius) {
         this.z_min = z_min;
@@ -693,6 +697,334 @@ var Heart = (function () {
     }
     return Heart;
 })();
+var Road = (function () {
+    function Road(game, tiles, generate) {
+        this.game = game;
+        this.tiles = tiles;
+        this.generate = generate;
+    }
+    Road.prototype.fixRoads = function (map, tiles, set) {
+        // give it all your tiles, and it makes your roads perfect!
+        // road magic!
+        var problemTiles = [];
+        var nsProbs = this.findNSProblems(map, tiles);
+        var ewProbs = this.findEWProblems(map, tiles);
+        problemTiles = this.arrayUnique(nsProbs.concat(ewProbs));
+        tiles = this.fixProblemTiles(map, tiles, set, problemTiles);
+        return tiles;
+    };
+    // Give it the tiles, the corner this join happens in, and it puts some corners on your highway
+    Road.prototype.fixHighways = function (map, tiles, corner) {
+        switch (corner) {
+            case "nw":
+                var cornerX = 2;
+                var cornerY = 2;
+                // fix the corner roads
+                tiles[this.generate.getIndexFromCoords(map, cornerX - 1, cornerY - 1)] = this.tiles.highways.open;
+                tiles[this.generate.getIndexFromCoords(map, cornerX, cornerY - 1)] = this.tiles.highways.straight.w[1];
+                tiles[this.generate.getIndexFromCoords(map, cornerX - 1, cornerY)] = this.tiles.highways.straight.n[1];
+                tiles[this.generate.getIndexFromCoords(map, cornerX, cornerY)] = this.tiles.highways.corner;
+                // fix edge caps
+                tiles[this.generate.getIndexFromCoords(map, cornerX + 1, cornerY)] = this.tiles.highways.edge_caps.w;
+                tiles[this.generate.getIndexFromCoords(map, cornerX, cornerY + 1)] = this.tiles.highways.edge_caps.n;
+                break;
+            case "ne":
+                var cornerX = map.units - 1;
+                var cornerY = 2;
+                // fix the corner roads
+                tiles[this.generate.getIndexFromCoords(map, cornerX + 1, cornerY - 1)] = this.tiles.highways.open;
+                tiles[this.generate.getIndexFromCoords(map, cornerX, cornerY - 1)] = this.tiles.highways.straight.w[1];
+                tiles[this.generate.getIndexFromCoords(map, cornerX + 1, cornerY)] = this.tiles.highways.straight.s[0];
+                tiles[this.generate.getIndexFromCoords(map, cornerX, cornerY)] = this.tiles.highways.corner;
+                // fix edge caps
+                tiles[this.generate.getIndexFromCoords(map, cornerX - 1, cornerY)] = this.tiles.highways.edge_caps.e;
+                tiles[this.generate.getIndexFromCoords(map, cornerX, cornerY + 1)] = this.tiles.highways.edge_caps.n;
+                break;
+            case "se":
+                var cornerX = map.units - 1;
+                var cornerY = map.units - 1;
+                // fix the corner roads
+                tiles[this.generate.getIndexFromCoords(map, cornerX + 1, cornerY + 1)] = this.tiles.highways.open;
+                tiles[this.generate.getIndexFromCoords(map, cornerX, cornerY - 1)] = this.tiles.highways.straight.w[1];
+                tiles[this.generate.getIndexFromCoords(map, cornerX + 1, cornerY)] = this.tiles.highways.straight.s[0];
+                tiles[this.generate.getIndexFromCoords(map, cornerX, cornerY)] = this.tiles.highways.corner;
+                // fix edge caps
+                tiles[this.generate.getIndexFromCoords(map, cornerX - 1, cornerY)] = this.tiles.highways.edge_caps.e;
+                tiles[this.generate.getIndexFromCoords(map, cornerX, cornerY + 1)] = this.tiles.highways.edge_caps.n;
+                break;
+            case "se":
+                var cornerX = map.units - 1;
+                var cornerY = map.units - 1;
+                // fix the corner roads
+                tiles[this.generate.getIndexFromCoords(map, cornerX + 1, cornerY + 1)] = this.tiles.highways.open;
+                tiles[this.generate.getIndexFromCoords(map, cornerX, cornerY + 1)] = this.tiles.highways.straight.e[0];
+                tiles[this.generate.getIndexFromCoords(map, cornerX - 1, cornerY)] = this.tiles.highways.straight.s[1];
+                tiles[this.generate.getIndexFromCoords(map, cornerX, cornerY)] = this.tiles.highways.corner;
+                // fix edge caps
+                tiles[this.generate.getIndexFromCoords(map, cornerX + 1, cornerY)] = this.tiles.highways.edge_caps.w;
+                tiles[this.generate.getIndexFromCoords(map, cornerX, cornerY - 1)] = this.tiles.highways.edge_caps.s;
+                break;
+        }
+        return tiles;
+    };
+    // joins together highways and roads
+    Road.prototype.joinRoadHighway = function (map, tiles, x, y, direction) {
+        switch (direction) {
+            case "n":
+                // set join piece
+                tiles[this.generate.getIndexFromCoords(map, x, y - 1)] = this.tiles.highways.joins.s;
+                // caps
+                tiles[this.generate.getIndexFromCoords(map, x - 1, y)] = this.tiles.highways.edge_caps.e;
+                tiles[this.generate.getIndexFromCoords(map, x + 1, y)] = this.tiles.highways.edge_caps.w;
+                break;
+            case "e":
+                // set join piece
+                tiles[this.generate.getIndexFromCoords(map, x + 1, y)] = this.tiles.highways.joins.w;
+                // caps
+                tiles[this.generate.getIndexFromCoords(map, x, y - 1)] = this.tiles.highways.edge_caps.s;
+                tiles[this.generate.getIndexFromCoords(map, x, y + 1)] = this.tiles.highways.edge_caps.n;
+                break;
+            case "w":
+                // set join piece
+                tiles[this.generate.getIndexFromCoords(map, x - 1, y)] = this.tiles.highways.joins.e;
+                // caps
+                tiles[this.generate.getIndexFromCoords(map, x, y + 1)] = this.tiles.highways.edge_caps.n;
+                tiles[this.generate.getIndexFromCoords(map, x, y - 1)] = this.tiles.highways.edge_caps.s;
+                break;
+            case "s":
+                // set join piece
+                tiles[this.generate.getIndexFromCoords(map, x, y + 1)] = this.tiles.highways.joins.n;
+                // caps
+                tiles[this.generate.getIndexFromCoords(map, x - 1, y)] = this.tiles.highways.edge_caps.e;
+                tiles[this.generate.getIndexFromCoords(map, x + 1, y)] = this.tiles.highways.edge_caps.w;
+                break;
+        }
+        return tiles;
+    };
+    Road.prototype.displayProblemTiles = function (tiles, problems) {
+        var i = 0;
+        while (i < problems.length) {
+            tiles[problems[i]] = 43;
+            i++;
+        }
+        return tiles;
+    };
+    // pass it a map, tiles and an array of problem tiles, and it fixes it
+    Road.prototype.fixProblemTiles = function (map, tiles, set, problems) {
+        var i = 0;
+        // let's work on our tiles one by one
+        while (i < problems.length) {
+            // this is our desired object
+            var needle = { n: false, e: false, w: false, s: false, set: set };
+            // check to see if there's a road tile to the north
+            var n = (problems[i] - map.units);
+            if (tiles[n] != 0) {
+                var nX = this.getDirections(tiles[n]);
+                if (nX && nX.s == true && nX.set == set) {
+                    // this tile to the north needs a south connection (us)
+                    needle.n = true;
+                }
+            }
+            // check to see if there's a road tile to the south
+            var s = (problems[i] + map.units);
+            if (tiles[s] != 0) {
+                var sX = this.getDirections(tiles[s]);
+                if (sX && sX.n == true && sX.set == set) {
+                    // this tile to the south needs a north connection
+                    needle.s = true;
+                }
+            }
+            // check to see if there's a road tile to the east
+            var e = (problems[i] + 1);
+            if (tiles[e] != 0) {
+                var eX = this.getDirections(tiles[e]);
+                if (eX && eX.w == true && eX.set == set) {
+                    // this tile to the east needs a west connection (us)
+                    needle.e = true;
+                }
+            }
+            // check to see if there's a road tile to the west
+            var w = (problems[i] - 1);
+            if (tiles[w] != 0) {
+                var wX = this.getDirections(tiles[w]);
+                if (wX && wX.e == true && wX.set == set) {
+                    // this tile to the west needs an east connection (us)
+                    needle.w = true;
+                }
+            }
+            // we have our needle, now let's find it!
+            var index = this.getIndexFromObj(needle);
+            if (index != -1) {
+                // we found a match
+                tiles[problems[i]] = index;
+                if (needle.n === true) {
+                    tiles[n] = this.getIndex("ns", "city_intersection");
+                }
+                if (needle.e === true) {
+                    tiles[e] = this.getIndex("ew", "city_intersection");
+                }
+                if (needle.w === true) {
+                    tiles[w] = this.getIndex("ew", "city_intersection");
+                }
+                if (needle.s === true) {
+                    tiles[s] = this.getIndex("ns", "city_intersection");
+                }
+            }
+            i++;
+        }
+        return tiles;
+    };
+    //finds problems using the n/s tile as the master tile
+    Road.prototype.findNSProblems = function (map, tiles) {
+        var masterTiles = this.getIndices(["n", "s"]);
+        var problemTiles = [];
+        var i = 0;
+        while (i < tiles.length) {
+            if (masterTiles.indexOf(tiles[i]) != -1) {
+                var n = i - map.units;
+                var s = i + map.units;
+                //there's a match, this is a "master tile, let's check its friends
+                if (masterTiles.indexOf(tiles[n]) === -1) {
+                    //there's i don't recognize what's up there
+                    problemTiles.push(n);
+                }
+                if (masterTiles.indexOf(tiles[s]) === -1) {
+                    //there's i don't recognize what's down there
+                    problemTiles.push(s);
+                }
+            }
+            i++;
+        }
+        return problemTiles;
+    };
+    //finds problems using the e/w tile as the master tile
+    Road.prototype.findEWProblems = function (map, tiles) {
+        var masterTiles = this.getIndices(["e", "w"]);
+        var problemTiles = [];
+        var i = 0;
+        while (i < tiles.length) {
+            if (masterTiles.indexOf(tiles[i]) != -1) {
+                var e = i + 1;
+                var w = i - 1;
+                //there's a match, this is a "master tile, let's check its friends
+                if (masterTiles.indexOf(tiles[e]) == -1) {
+                    //there's i don't recognize what's up there
+                    problemTiles.push(e);
+                }
+                if (masterTiles.indexOf(tiles[w]) == -1) {
+                    //there's i don't recognize what's down there
+                    problemTiles.push(w);
+                }
+            }
+            i++;
+        }
+    };
+    //give it an array of directions and it will tell you which piece fits the bill
+    Road.prototype.getIndex = function (directions, set) {
+        var i = 0;
+        var needle = {
+            n: directions.indexOf("n") != -1 ? true : false,
+            e: directions.indexOf("e") != -1 ? true : false,
+            w: directions.indexOf("w") != -1 ? true : false,
+            s: directions.indexOf("s") != -1 ? true : false,
+            set: set
+        };
+        return this.getIndexFromObj(needle);
+    };
+    Road.prototype.getIndexFromObj = function (needle) {
+        for (var key in this.tiles.roads) {
+            if (this.tiles.roads.hasOwnProperty(key)) {
+                if (this.compareJSON(this.tiles.roads[key], needle)) {
+                    return parseInt(key);
+                }
+            }
+        }
+        return -1;
+    };
+    //give it an array of directions and it will tell you which pieces fits the bill (no set required)
+    Road.prototype.getIndices = function (directions) {
+        var needles = [];
+        var needle = {
+            n: directions.indexOf("n") != -1 ? true : false,
+            e: directions.indexOf("e") != -1 ? true : false,
+            w: directions.indexOf("w") != -1 ? true : false,
+            s: directions.indexOf("s") != -1 ? true : false
+        };
+        for (var key in this.tiles.roads) {
+            if (this.tiles.roads[key].n == needle.n && this.tiles.roads[key].s == needle.s) {
+                if (this.tiles.roads[key].e == needle.e && this.tiles.roads[key].w == needle.w) {
+                    //this piece is the piece we want
+                    needles.push(parseInt(key));
+                }
+            }
+        }
+        return needles;
+    };
+    // give it an index, and it will return a direction object back to you
+    Road.prototype.getDirections = function (index) {
+        return this.tiles.roads[index];
+    };
+    Road.prototype.compareJSON = function (a, b) {
+        return (JSON.stringify(a) === JSON.stringify(b));
+    };
+    Road.prototype.arrayUnique = function (array) {
+        var a = array.concat();
+        for (var i = 0; i < a.length; ++i) {
+            for (var j = i + 1; j < a.length; ++j) {
+                if (a[i] === a[j]) {
+                    a.splice(j--, 1);
+                }
+            }
+        }
+        return a;
+    };
+    return Road;
+})();
+var GameOver = (function (_super) {
+    __extends(GameOver, _super);
+    function GameOver() {
+        _super.apply(this, arguments);
+    }
+    GameOver.prototype.create = function () {
+        var style = { font: '65px Arial', fill: '#ffffff', align: 'center' };
+        this.titleText = this.game.add.text(this.game.world.centerX, 100, 'Game Over!', style);
+        this.titleText.anchor.setTo(0.5, 0.5);
+        this.congratsText = this.game.add.text(this.game.world.centerX, 200, 'You Win!', { font: '32px Arial', fill: '#ffffff', align: 'center' });
+        this.congratsText.anchor.setTo(0.5, 0.5);
+        this.instructionText = this.game.add.text(this.game.world.centerX, 300, 'Click To Play Again', { font: '16px Arial', fill: '#ffffff', align: 'center' });
+        this.instructionText.anchor.setTo(0.5, 0.5);
+    };
+    GameOver.prototype.update = function () {
+        if (this.game.input.activePointer.justPressed()) {
+            this.game.state.start('play');
+        }
+    };
+    GameOver.prototype.render = function () { };
+    return GameOver;
+})(Phaser.State);
+var Menu = (function (_super) {
+    __extends(Menu, _super);
+    function Menu() {
+        _super.apply(this, arguments);
+    }
+    Menu.prototype.create = function () {
+        var style = { font: '65px Arial', fill: '#ffffff', align: 'center' };
+        this.sprite = this.game.add.sprite(this.game.world.centerX, 138, 'yeoman');
+        this.sprite.anchor.setTo(0.5, 0.5);
+        this.titleText = this.game.add.text(this.game.world.centerX, 300, '\'Allo, \'Allo!', style);
+        this.titleText.anchor.setTo(0.5, 0.5);
+        this.instructionsText = this.game.add.text(this.game.world.centerX, 400, 'Click anywhere to play "Click The Yeoman Logo"', { font: '16px Arial', fill: '#ffffff', align: 'center' });
+        this.instructionsText.anchor.setTo(0.5, 0.5);
+        this.sprite.angle = -20;
+        this.game.add.tween(this.sprite).to({ angle: 20 }, 1000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+    };
+    Menu.prototype.update = function () {
+        if (this.game.input.activePointer.justPressed()) {
+            this.game.state.start('play');
+        }
+    };
+    return Menu;
+})(Phaser.State);
 var Boot = (function (_super) {
     __extends(Boot, _super);
     function Boot() {
@@ -769,51 +1101,6 @@ var Boot = (function (_super) {
         return !(r2.left > r1.right || r2.right < r1.left || r2.top > r1.bottom || r2.bottom < r1.top);
     };
     return Boot;
-})(Phaser.State);
-var GameOver = (function (_super) {
-    __extends(GameOver, _super);
-    function GameOver() {
-        _super.apply(this, arguments);
-    }
-    GameOver.prototype.create = function () {
-        var style = { font: '65px Arial', fill: '#ffffff', align: 'center' };
-        this.titleText = this.game.add.text(this.game.world.centerX, 100, 'Game Over!', style);
-        this.titleText.anchor.setTo(0.5, 0.5);
-        this.congratsText = this.game.add.text(this.game.world.centerX, 200, 'You Win!', { font: '32px Arial', fill: '#ffffff', align: 'center' });
-        this.congratsText.anchor.setTo(0.5, 0.5);
-        this.instructionText = this.game.add.text(this.game.world.centerX, 300, 'Click To Play Again', { font: '16px Arial', fill: '#ffffff', align: 'center' });
-        this.instructionText.anchor.setTo(0.5, 0.5);
-    };
-    GameOver.prototype.update = function () {
-        if (this.game.input.activePointer.justPressed()) {
-            this.game.state.start('play');
-        }
-    };
-    GameOver.prototype.render = function () { };
-    return GameOver;
-})(Phaser.State);
-var Menu = (function (_super) {
-    __extends(Menu, _super);
-    function Menu() {
-        _super.apply(this, arguments);
-    }
-    Menu.prototype.create = function () {
-        var style = { font: '65px Arial', fill: '#ffffff', align: 'center' };
-        this.sprite = this.game.add.sprite(this.game.world.centerX, 138, 'yeoman');
-        this.sprite.anchor.setTo(0.5, 0.5);
-        this.titleText = this.game.add.text(this.game.world.centerX, 300, '\'Allo, \'Allo!', style);
-        this.titleText.anchor.setTo(0.5, 0.5);
-        this.instructionsText = this.game.add.text(this.game.world.centerX, 400, 'Click anywhere to play "Click The Yeoman Logo"', { font: '16px Arial', fill: '#ffffff', align: 'center' });
-        this.instructionsText.anchor.setTo(0.5, 0.5);
-        this.sprite.angle = -20;
-        this.game.add.tween(this.sprite).to({ angle: 20 }, 1000, Phaser.Easing.Linear.None, true, 0, 1000, true);
-    };
-    Menu.prototype.update = function () {
-        if (this.game.input.activePointer.justPressed()) {
-            this.game.state.start('play');
-        }
-    };
-    return Menu;
 })(Phaser.State);
 /// <reference path="../libs/phaser/phaser.d.ts" />
 /// <reference path="../libs/phaser/p2.d.ts" />

@@ -138,7 +138,6 @@
     <TypeScriptCompile Include="src\states\Menu.ts" />
     <TypeScriptCompile Include="src\states\Boot.ts" />
     <TypeScriptCompile Include="src\states\Preload.ts" />
-    <TypeScriptCompile Include="src\Tiles.ts" />
     <TypeScriptCompile Include="src\WorldManager.ts" />
   </ItemGroup>
   <ItemGroup>

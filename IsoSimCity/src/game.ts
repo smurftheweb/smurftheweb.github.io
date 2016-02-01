@@ -19,9 +19,8 @@ class IsoGame {
         this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', { preload: this.preload, create: this.create });
         this.generate = new Generate(this);
         this.worldManager = new WorldManager(this.game, this.iso);
-        this.roads = new Road(this.game);
-
         this.tiles = this.game.load.json('tiles', './tiles.json'); // this comes from node.js
+        this.roads = new Road(this.game, this.tiles, this.generate);
     }
 
     preload() {
