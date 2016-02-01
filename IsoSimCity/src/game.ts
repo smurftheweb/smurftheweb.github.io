@@ -21,7 +21,7 @@ class IsoGame {
         this.worldManager = new WorldManager(this.game, this.iso);
         this.roads = new Road(this.game);
 
-        this.tiles = require('./tiles.json');
+        this.tiles = this.game.load.json('tiles', './tiles.json'); // this comes from node.js
     }
 
     preload() {
